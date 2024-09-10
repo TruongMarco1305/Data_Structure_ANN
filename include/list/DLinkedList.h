@@ -245,6 +245,11 @@ DLinkedList<T>::DLinkedList(
     bool (*itemEqual)(T &, T &))
 {
     // TODO
+    this->head=nullptr;
+    this->tail=nullptr;
+    this->count=0;
+    this->deleteUserData=deleteUserData;
+    this->itemEqual=itemEqual;
 }
 
 template <class T>
