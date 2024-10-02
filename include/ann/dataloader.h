@@ -45,19 +45,18 @@ public:
         this->drop_last = drop_last;
         this->total_sample = ptr_dataset->len();
         this->index_of_dataset = xt::arange<unsigned long>(0, this->total_sample);
-        if (shuffle) random_shuffle(index_of_dataset.begin(), index_of_dataset.end());
-        if (this->total_sample <= this->batch_size)
+        if (this->shuffle)
+        {
+            xt::random::default_engine_type engine(0);
+            xt::random::shuffle(this->index_of_dataset, engine);
+        }
+        if (!this->drop_last && this->total_sample <= this->batch_size)
         {
             this->num_batches = 1;
         }
         else
         {
             this->num_batches = this->total_sample / this->batch_size;
-            unsigned long remaining_sample = this->total_sample % this->batch_size;
-            if (remaining_sample > 0 && !this->drop_last)
-            {
-                this->num_batches++;
-            }
         }
     }
     virtual ~DataLoader()
@@ -120,17 +119,20 @@ public:
 
         Batch<DType, LType> operator*() const
         {
-            unsigned long batch_start = this->cursor * dataloader->batch_size;
+            unsigned long batch_start = this->cursor * this->dataloader->batch_size;
             unsigned long current_batch_size;
-            unsigned long total_batches = dataloader->num_batches;
+            unsigned long total_batches = this->dataloader->num_batches;
 
             if (cursor < total_batches - 1)
             {
-                current_batch_size = dataloader->batch_size;
+                current_batch_size = this->dataloader->batch_size;
             }
             else
             {
-                current_batch_size = dataloader->total_sample - batch_start;
+                if (!this->dataloader->drop_last)
+                    current_batch_size = this->dataloader->total_sample - batch_start;
+                else
+                    current_batch_size = this->dataloader->batch_size;
             }
 
             if (current_batch_size == 0)
@@ -138,9 +140,9 @@ public:
                 return Batch<DType, LType>(xt::xarray<DType>(), xt::xarray<LType>());
             }
 
-            DataLabel<DType, LType> first_sample = dataloader->ptr_dataset->getitem(dataloader->index_of_dataset(batch_start));
-            auto data_shape = first_sample.getData().shape();
-            auto label_shape = first_sample.getLabel().shape();
+            DataLabel<DType, LType> first_sample = this->dataloader->ptr_dataset->getitem(this->dataloader->index_of_dataset(batch_start));
+            xt::svector<unsigned long> data_shape = first_sample.getData().shape();
+            xt::svector<unsigned long> label_shape = first_sample.getLabel().shape();
 
             xt::svector<unsigned long> full_data_shape = {current_batch_size};
             full_data_shape.insert(full_data_shape.end(), data_shape.begin(), data_shape.end());
@@ -150,17 +152,24 @@ public:
 
             xt::xarray<DType> data = xt::empty<DType>(full_data_shape);
             xt::xarray<LType> label = xt::empty<LType>(full_label_shape);
-
             for (unsigned long i = 0; i < current_batch_size; ++i)
             {
-                unsigned long idx = dataloader->index_of_dataset[batch_start + i];
-                DataLabel<DType, LType> sample = dataloader->ptr_dataset->getitem(idx);
+                unsigned long idx = this->dataloader->index_of_dataset[batch_start + i];
+                DataLabel<DType, LType> sample = this->dataloader->ptr_dataset->getitem(idx);
 
                 xt::view(data, i) = sample.getData();
 
                 xt::view(label, i) = sample.getLabel();
             }
 
+            if (this->dataloader->ptr_dataset->get_label_shape().size() == 0)
+            {
+                return Batch<DType, LType>(data, xt::xarray<LType>());
+            }
+            else if (this->dataloader->ptr_dataset->get_data_shape().size() == 0)
+            {
+                return Batch<DType, LType>(xt::xarray<DType>(), label);
+            }
             return Batch<DType, LType>(data, label);
         }
     };

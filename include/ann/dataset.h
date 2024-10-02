@@ -81,10 +81,10 @@ public:
          */
         this->data = data;
         this->label = label;
-        auto auto_shape = data.shape();
+        auto auto_shape = this->data.shape();
         xt::svector<unsigned long> dataShape(auto_shape.begin(), auto_shape.end());
         this->data_shape = dataShape;
-        auto_shape = label.shape();
+        auto_shape = this->label.shape();
         xt::svector<unsigned long> labelShape(auto_shape.begin(), auto_shape.end());
         this->label_shape = labelShape;
     }
@@ -107,20 +107,32 @@ public:
          */
         if (index < 0 || index >= this->len())
             throw out_of_range("Index is out of range!");
-        return {xt::view(data, index, xt::all()), xt::view(label, index)};
+
+        auto data_slice = xt::view(this->data,index,xt::all());
+        auto label_slice = xt::view(this->label,index,xt::all());
+
+        if(this->label_shape.size() == 0 && this->data_shape.size() == 0){
+            return {this->data,this->label};
+        } else {
+            if(this->label_shape.size() == 0) return {data_slice,this->label};
+            if(this->data_shape.size() == 0) return {this->data,label_slice};
+        }
+        return {data_slice, label_slice};
     }
 
     xt::svector<unsigned long> get_data_shape()
     {
         /* TODO: your code is here to return data_shape
          */
-        return data_shape;
+        if(this->data_shape.size() == 0) return {};
+        return this->data_shape;
     }
     xt::svector<unsigned long> get_label_shape()
     {
         /* TODO: your code is here to return label_shape
          */
-        return label_shape;
+        if(this->label_shape.size() == 0) return {};
+        return this->label_shape;
     }
 };
 
