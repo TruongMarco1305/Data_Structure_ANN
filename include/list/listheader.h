@@ -15,11 +15,12 @@
 
 #include "XArrayList.h"
 #include "DLinkedList.h"
-//#include "SLinkedList.h"
+// #include "SLinkedList.h"
 template<class T>
 using xvector = XArrayList<T>;
 template<class T>
 using xlist = DLinkedList<T>;
+
 
 
 

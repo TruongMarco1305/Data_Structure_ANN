@@ -1,0 +1,1 @@
+g++ -Iinclude -Isrc -std=c++17 main.cpp

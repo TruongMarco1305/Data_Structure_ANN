@@ -296,7 +296,7 @@ public:
 // Define a shorter name for DLinkedList:
 
 template <class T>
-using List = DLinkedList<T>;
+using DDList = DLinkedList<T>;
 
 //////////////////////////////////////////////////////////////////////
 ////////////////////////     METHOD DEFNITION      ///////////////////

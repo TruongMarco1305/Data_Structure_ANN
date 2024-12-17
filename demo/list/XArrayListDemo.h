@@ -86,5 +86,12 @@ void xlistDemo4(){
     delete p1; delete p2;
 }
 
+void xlistDemo(){
+    xlistDemo1();
+    xlistDemo2();
+    xlistDemo3();
+    xlistDemo4();
+}
+
 #endif /* XARRAYLISTDEMO_H */
 

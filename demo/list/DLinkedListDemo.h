@@ -21,12 +21,12 @@
 using namespace std;
 
 void dlistDemo1(){
-    List<int> dlist;
+    DLinkedList<int> dlist;
     for(int i = 0; i< 20 ; i++)
         dlist.add(i, i*i);
     dlist.println();
     
-    for(List<int>::Iterator it=dlist.begin(); it != dlist.end(); it++ )
+    for(DLinkedList<int>::Iterator it=dlist.begin(); it != dlist.end(); it++ )
         cout << *it << " ";
     cout << endl;
 }
@@ -39,7 +39,7 @@ void dlistDemo2(){
     for(DLinkedList<Point*>::Iterator it = list1.begin(); it != list1.end(); it++)
         cout << **it << endl;
     
-    Point* p1 = new Point(24.6f, 23.1f); //found in list
+    Point* p1 = new Point(24.6f, 23.1f); //found in DLinkedList
     Point* p2 = new Point(124.6f, 23.1f); //not found
     cout << *p1 << "=> " << (list1.contains(p1)? "found; " : "not found; ")
                 << " indexOf returns: " << list1.indexOf(p1) << endl;
@@ -106,18 +106,27 @@ void dlistDemo5(){
 }
 
 void dlistDemo6(){
-    List<int> list;
+    DLinkedList<int> DLinkedList;
     for(int i = 0; i< 10 ; i++)
-        list.add(i, i*i);
+        DLinkedList.add(i, i*i);
     
-    cout << setw(25) << left << "Original list: ";
-    list.println();
+    cout << setw(25) << left << "Original DLinkedList: ";
+    DLinkedList.println();
     
     //
-    int& item = list.get(5);
+    int& item = DLinkedList.get(5);
     item = 999;
     cout << setw(25) << left << "After changing an item: ";
-    list.println();
+    DLinkedList.println();
+}
+
+void dlistDemo(){
+    dlistDemo1();
+    dlistDemo2();
+    dlistDemo3();
+    dlistDemo4();
+    dlistDemo5();
+    dlistDemo6();
 }
 
 #endif /* DLINKEDLISTDEMO_H */

@@ -60,5 +60,10 @@ void slistDemo2(){
     delete p1; delete p2;
 }
 
+void slistDemo(){
+    slistDemo1();
+    slistDemo2();
+}
+
 #endif /* SLINKEDLISTDEMO_H */
 
