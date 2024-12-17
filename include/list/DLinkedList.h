@@ -229,7 +229,7 @@ public:
         }
     };
     //////////////////////////////////////////////////////////////////////
-        class BWDIterator
+    class BWDIterator
     {
         // TODO implement
     private:
@@ -266,7 +266,7 @@ public:
         {
             pNode->next->prev = pNode->prev;
             pNode->prev->next = pNode->next;
-            Node *pNext = pNode->next; // MUST prev, so iterator++ will go to end
+            Node *pNext = pNode->next;
             if (removeItemData != 0)
                 removeItemData(pNode->data);
             delete pNode;
@@ -279,13 +279,11 @@ public:
         {
             return pNode != iterator.pNode;
         }
-        // Prefix -- overload
         BWDIterator &operator--()
         {
             pNode = pNode->prev;
             return *this;
         }
-        // Postfix -- overload
         BWDIterator operator--(int)
         {
             BWDIterator BWDiterator = *this;
@@ -351,6 +349,8 @@ DLinkedList<T>::~DLinkedList()
 {
     // TODO
     this->removeInternalData();
+    delete head;
+    delete tail;
 }
 
 template <class T>
@@ -434,7 +434,7 @@ typename DLinkedList<T>::Node *DLinkedList<T>::getPreviousNodeOf(int index)
         while (i > index)
         {
             current = current->prev;
-            i++;
+            i--;
         }
         return current;
     }

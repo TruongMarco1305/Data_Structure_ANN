@@ -18,6 +18,18 @@ string shape2str(xt::svector<unsigned long> vec){
     return res + ")";
 }
 
+// string shape2str(xt::svector<size_t> vec){
+//     stringstream ss;
+//     ss << "(";
+//     for(int idx=0; idx < vec.size(); idx++){
+//         ss << vec[idx] << ", ";
+//     }
+//     string res = ss.str();
+//     if(vec.size() > 1) res = res.substr(0, res.rfind(','));
+//     else res = res.substr(0, res.rfind(' '));
+//     return res + ")";
+// }
+
 int positive_index(int idx, int size){
     if(idx < 0) return idx = size + idx;
     return idx;

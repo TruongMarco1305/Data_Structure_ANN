@@ -14,10 +14,14 @@
 
 Layer::Layer() {
     /*TODO: Your code is here*/
+
 }
 
 Layer::Layer(const Layer& orig) {
     /*TODO: Your code is here*/ 
+    this->is_training = orig.is_training;
+    this->layer_idx = orig.layer_idx;
+    this->name = orig.name;
 }
 
 Layer::~Layer() {

@@ -31,12 +31,14 @@ private:
     xt::xarray<unsigned long> index_of_dataset;
     int total_sample;
     unsigned long num_batches;
+    int m_seed;
+
     /*TODO: add more member variables to support the iteration*/
 public:
     DataLoader(Dataset<DType, LType> *ptr_dataset,
                int batch_size,
                bool shuffle = true,
-               bool drop_last = false)
+               bool drop_last = false, int seed=-1)
     {
         /*TODO: Add your code to do the initialization */
         this->ptr_dataset = ptr_dataset;
@@ -45,19 +47,17 @@ public:
         this->drop_last = drop_last;
         this->total_sample = ptr_dataset->len();
         this->index_of_dataset = xt::arange<unsigned long>(0, this->total_sample);
+        this->m_seed = seed;
         if (this->shuffle)
         {
-            xt::random::default_engine_type engine(0);
-            xt::random::shuffle(this->index_of_dataset, engine);
+            if (seed >= 0){
+                xt::random::seed(this->m_seed);
+                xt::random::shuffle(this->index_of_dataset);
+            } else {
+                xt::random::shuffle(this->index_of_dataset);
+            }
         }
-        if (!this->drop_last && this->total_sample <= this->batch_size)
-        {
-            this->num_batches = 1;
-        }
-        else
-        {
-            this->num_batches = this->total_sample / this->batch_size;
-        }
+        this->num_batches = this->total_sample / this->batch_size;
     }
     virtual ~DataLoader()
     {
@@ -119,42 +119,42 @@ public:
 
         Batch<DType, LType> operator*() const
         {
-            unsigned long batch_start = this->cursor * this->dataloader->batch_size;
-            unsigned long current_batch_size;
-            unsigned long total_batches = this->dataloader->num_batches;
+            unsigned long start = this->cursor * this->dataloader->batch_size;
+            unsigned long current_size;
+            unsigned long total = this->dataloader->num_batches;
 
-            if (cursor < total_batches - 1)
+            if (cursor < total - 1)
             {
-                current_batch_size = this->dataloader->batch_size;
+                current_size = this->dataloader->batch_size;
             }
             else
             {
                 if (!this->dataloader->drop_last)
-                    current_batch_size = this->dataloader->total_sample - batch_start;
+                    current_size = this->dataloader->total_sample - start;
                 else
-                    current_batch_size = this->dataloader->batch_size;
+                    current_size = this->dataloader->batch_size;
             }
 
-            if (current_batch_size == 0)
+            if (current_size == 0)
             {
                 return Batch<DType, LType>(xt::xarray<DType>(), xt::xarray<LType>());
             }
 
-            DataLabel<DType, LType> first_sample = this->dataloader->ptr_dataset->getitem(this->dataloader->index_of_dataset(batch_start));
-            xt::svector<unsigned long> data_shape = first_sample.getData().shape();
-            xt::svector<unsigned long> label_shape = first_sample.getLabel().shape();
+            DataLabel<DType, LType> first = this->dataloader->ptr_dataset->getitem(this->dataloader->index_of_dataset(start));
+            xt::svector<unsigned long> first_data_shape = first.getData().shape();
+            xt::svector<unsigned long> first_label_shape = first.getLabel().shape();
 
-            xt::svector<unsigned long> full_data_shape = {current_batch_size};
-            full_data_shape.insert(full_data_shape.end(), data_shape.begin(), data_shape.end());
+            xt::svector<unsigned long> full_data_shape = {current_size};
+            full_data_shape.insert(full_data_shape.end(), first_data_shape.begin(), first_data_shape.end());
 
-            xt::svector<unsigned long> full_label_shape = {current_batch_size};
-            full_label_shape.insert(full_label_shape.end(), label_shape.begin(), label_shape.end());
+            xt::svector<unsigned long> full_label_shape = {current_size};
+            full_label_shape.insert(full_label_shape.end(), first_label_shape.begin(), first_label_shape.end());
 
             xt::xarray<DType> data = xt::empty<DType>(full_data_shape);
             xt::xarray<LType> label = xt::empty<LType>(full_label_shape);
-            for (unsigned long i = 0; i < current_batch_size; ++i)
+            for (unsigned long i = 0; i < current_size; ++i)
             {
-                unsigned long idx = this->dataloader->index_of_dataset[batch_start + i];
+                unsigned long idx = this->dataloader->index_of_dataset[start + i];
                 DataLabel<DType, LType> sample = this->dataloader->ptr_dataset->getitem(idx);
 
                 xt::view(data, i) = sample.getData();

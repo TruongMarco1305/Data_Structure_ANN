@@ -43,6 +43,7 @@ enum class_metrics{
 
 
 string shape2str(xt::svector<unsigned long> vec);
+// string shape2str(xt::svector<size_t> vec);
 int positive_index(int idx, int size);
 xt::xarray<double> outer_stack(xt::xarray<double> X, xt::xarray<double>  Y);
 xt::xarray<double> diag_stack(xt::xarray<double> X);
