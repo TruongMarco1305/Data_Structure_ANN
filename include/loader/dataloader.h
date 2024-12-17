@@ -51,15 +51,6 @@ public:
         this->total_sample = ptr_dataset->len();
         this->index_of_dataset = xt::arange<unsigned long>(0, this->total_sample);
         this->m_seed = seed;
-        if (this->shuffle)
-        {
-            if (seed >= 0){
-                xt::random::seed(this->m_seed);
-                xt::random::shuffle(this->index_of_dataset);
-            } else {
-                xt::random::shuffle(this->index_of_dataset);
-            }
-        }
         this->num_batches = this->total_sample / this->batch_size;
     }
     virtual ~DataLoader()
@@ -80,6 +71,15 @@ public:
 
     Iterator begin()
     {
+        if (this->shuffle)
+        {
+            if (seed >= 0){
+                xt::random::seed(this->m_seed);
+                xt::random::shuffle(this->index_of_dataset);
+            } else {
+                xt::random::shuffle(this->index_of_dataset);
+            }
+        }
         return Iterator(this, 0);
     }
 
