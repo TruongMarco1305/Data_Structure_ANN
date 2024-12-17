@@ -4,14 +4,11 @@
 #include <string>
 #include "list/listheader.h"
 #include "util/Point.h"
-#include "list/DLinkedListDemo.h"
-#include "list/XArrayListDemo.h"
 
 #include "ann/funtions.h"
 #include "ann/xtensor_lib.h"
 #include "ann/dataset.h"
-#include "ann/dataloader.h"
-#include "ann/DataLoaderDemo.h"
+#include "loader/dataloader.h"
 
 using namespace std;
 
