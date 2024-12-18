@@ -16,6 +16,8 @@
 #include "demo/sorting/HeapSortDemo.h"
 #include "demo/sorting/QuickSortDemo.h"
 #include "demo/sorting/ShellSortDemo.h"
+#include "demo/sorting/ListSortDemo.h"
+#include "demo/list/SLinkedListDemo.h"
 #include "demo/sorting/StraightInsertionSortDemo.h"
 #include "demo/sorting/StraightSelectionSortDemo.h"
 
@@ -25,15 +27,16 @@ int main(int argc, char** argv) {
     // case_data_wo_label_1();
     // case_data_wi_label_1();
     // case_batch_larger_nsamples();
-    // dlistDemo();
-    // xlistDemo();
-    // slistDemo();
+    dlistDemo();
+    xlistDemo();
+    slistDemo();
     BuubleSortDemo1();
     HeapSortDemo1();
     straightSDemo1();
     straightSelDemo1();
     QuickSortDemo1();
     ShellSortDemo1();
+    listSortDemo();
     return 0;
 }
 

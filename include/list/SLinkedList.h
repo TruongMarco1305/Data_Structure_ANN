@@ -16,12 +16,12 @@ template <class T>
 class SLinkedList : public IList<T>
 {
 public:
-    class SNode;        // Forward declaration
+    class Node;        // Forward declaration
     class Iterator;    // Forward declaration
 
 protected:
-    SNode *head; // this SNode does not contain user's data
-    SNode *tail; // this SNode does not contain user's data
+    Node *head; // this Node does not contain user's data
+    Node *tail; // this Node does not contain user's data
     int count;
     bool (*itemEqual)(T &lhs, T &rhs);        // function pointer: test if two items (type: T&) are equal or not
     void (*deleteUserData)(SLinkedList<T> *); // function pointer: be called to remove items (if they are pointer type)
@@ -124,25 +124,25 @@ protected:
     }
     void copyFrom(const SLinkedList<T> &list);
     void removeInternalData();
-    SNode *getPreviousNodeOf(int index);
+    Node *getPreviousNodeOf(int index);
 
     //////////////////////////////////////////////////////////////////////
     ////////////////////////  INNER CLASSES DEFNITION ////////////////////
     //////////////////////////////////////////////////////////////////////
 public:
-    class SNode
+    class Node
     {
     public:
         T data;
-        SNode *next;
+        Node *next;
         friend class SLinkedList<T>;
 
     public:
-        SNode(SNode *next = 0)
+        Node(Node *next = 0)
         {
             this->next = next;
         }
-        SNode(T data, SNode *next = 0)
+        Node(T data, Node *next = 0)
         {
             this->data = data;
             this->next = next;
@@ -154,7 +154,7 @@ public:
     {
     private:
         SLinkedList<T> *pList;
-        SNode *pNode;
+        Node *pNode;
 
     public:
         Iterator(SLinkedList<T> *pList = 0, bool begin = true)
@@ -184,7 +184,7 @@ public:
         }
         void remove(void (*removeItemData)(T) = 0)
         {
-            SNode *pNext = pNode->next;
+            Node *pNext = pNode->next;
             if (removeItemData != 0)
                 removeItemData(pNode->data);
             delete pNode;
@@ -231,8 +231,8 @@ SLinkedList<T>::SLinkedList(
     bool (*itemEqual)(T &, T &))
 {
     // TODO
-    this->tail = new SNode();
-    this->head = new SNode(this->tail);
+    this->tail = new Node();
+    this->head = new Node(this->tail);
     this->count = 0;
     this->deleteUserData = deleteUserData;
     this->itemEqual = itemEqual;
@@ -242,8 +242,8 @@ template <class T>
 SLinkedList<T>::SLinkedList(const SLinkedList<T> &list)
 {
     // TODO
-    this->tail = new SNode();
-    this->head = new SNode(this->tail);
+    this->tail = new Node();
+    this->head = new Node(this->tail);
     this->count = 0;
     this->deleteUserData = list.deleteUserData;
     this->itemEqual = list.itemEqual;
@@ -276,14 +276,14 @@ void SLinkedList<T>::add(T e)
     // TODO
     if (this->count == 0)
     {
-        SNode *newNode = new SNode(e, this->tail);
+        Node *newNode = new Node(e, this->tail);
         this->head->next = newNode;
         this->count++;
         return;
     }
-    SNode* prevTail = this->head->next;
+    Node* prevTail = this->head->next;
     while(prevTail->next != this->tail) prevTail = prevTail->next;
-    SNode *newNode = new SNode(e, this->tail);
+    Node *newNode = new Node(e, this->tail);
     prevTail->next = newNode;
     this->count++;
 }
@@ -293,10 +293,10 @@ void SLinkedList<T>::add(int index, T e)
     // TODO
     if (index < 0 || index > count)
         throw out_of_range("Index is out of range!");
-    SNode *newNode;
+    Node *newNode;
     if (index == 0)
     {
-        newNode = new SNode(e,this->head->next);
+        newNode = new Node(e,this->head->next);
         this->head->next = newNode;
         this->count++;
         return;
@@ -308,9 +308,9 @@ void SLinkedList<T>::add(int index, T e)
         return;
     }
 
-    newNode = new SNode(e);
-    SNode *current = this->head->next;
-    SNode *prev = nullptr;
+    newNode = new Node(e);
+    Node *current = this->head->next;
+    Node *prev = nullptr;
     int i = 0;
     while (i < index)
     {
@@ -324,14 +324,14 @@ void SLinkedList<T>::add(int index, T e)
 }
 
 template <class T>
-typename SLinkedList<T>::SNode *SLinkedList<T>::getPreviousNodeOf(int index)
+typename SLinkedList<T>::Node *SLinkedList<T>::getPreviousNodeOf(int index)
 {
     /**
-     * Returns the SNode preceding the specified index in the singly linked list.
+     * Returns the Node preceding the specified index in the singly linked list.
      */
     // TODO
     int i = 0;
-    SNode* prev = this->head;
+    Node* prev = this->head;
     while (i < index){
         prev = prev->next;
         i ++;
@@ -348,7 +348,7 @@ T SLinkedList<T>::removeAt(int index)
 
     if (this->count == 1)
     {
-        SNode *tempNode = this->head->next;
+        Node *tempNode = this->head->next;
         T deleteData = tempNode->data;
         this->head->next = this->tail;
         this->count--;
@@ -358,7 +358,7 @@ T SLinkedList<T>::removeAt(int index)
 
     if (index == 0)
     {
-        SNode *tempNode = this->head->next;
+        Node *tempNode = this->head->next;
         T deleteData = tempNode->data;
         this->head->next = tempNode->next;
         this->count--;
@@ -366,8 +366,8 @@ T SLinkedList<T>::removeAt(int index)
         return deleteData;
     }
 
-    SNode *current = this->head->next;
-    SNode* prev = nullptr;
+    Node *current = this->head->next;
+    Node* prev = nullptr;
     int i = 0;
     while (i < index)
     {
@@ -409,7 +409,7 @@ T &SLinkedList<T>::get(int index)
     // TODO
     if (index < 0 || index >= count)
         throw out_of_range("Index is out of range!");
-    SNode *current = this->head->next;
+    Node *current = this->head->next;
     int i = 0;
     SLinkedList<T>::Iterator it = this->begin();
     for(it; it != this->end(); ++it){
@@ -518,7 +518,7 @@ void SLinkedList<T>::removeInternalData()
     /**
      * Clears the internal data of the list by deleting all nodes and user-defined data.
      * If a custom deletion function is provided, it is used to free the user's data stored in the nodes.
-     * Traverses and deletes each SNode between the head and tail to release memory.
+     * Traverses and deletes each Node between the head and tail to release memory.
      */
     // TODO
     if (this->count == 0)

@@ -107,5 +107,12 @@ void listSortDemo4(){
     delete []items;
 }
 
+void listSortDemo(){
+    listSortDemo1();
+    listSortDemo2();
+    listSortDemo3();
+    listSortDemo4();
+}
+
 #endif /* LISTSORT_H */
 
