@@ -67,6 +67,8 @@ void AdamParamGroup::register_param(string param_name,
         xt::xarray<double>* ptr_param,
         xt::xarray<double>* ptr_grad){
     //YOUR CODE IS HERE
+    this->m_pParams->put(param_name,ptr_param);
+    this->m_pGrads->put(param_name,ptr_param);
 }
 void AdamParamGroup::register_sample_count(unsigned long long* pCounter){
     m_pCounter = pCounter;
@@ -74,6 +76,7 @@ void AdamParamGroup::register_sample_count(unsigned long long* pCounter){
 
 void AdamParamGroup::zero_grad(){
     //YOUR CODE IS HERE
+    
 }
 
 void AdamParamGroup::step(double lr){

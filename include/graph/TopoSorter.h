@@ -127,14 +127,6 @@ public:
         }
         return result;
     }
-
-protected:
-
-    //Helper functions
-    xMap<T, int> vertex2inDegree(int (*hash)(T&, int));
-    xMap<T, int> vertex2outDegree(int (*hash)(T&, int));
-    DLinkedList<T> listOfZeroInDegrees();
-
 }; //TopoSorter
 template<class T>
 int TopoSorter<T>::DFS = 0;

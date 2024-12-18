@@ -25,5 +25,8 @@ Adagrad::~Adagrad() {
 
 IParamGroup* Adagrad::create_group(string name){
     //YOUR CODE IS HERE
+    IParamGroup* adagrad = new AdaParamGroup(this->m_decay);
+    this->m_pGroupMap->put(name,adagrad);
+    return adagrad;
 }
 
