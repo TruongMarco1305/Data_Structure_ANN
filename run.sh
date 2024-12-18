@@ -1,1 +1,1 @@
-g++ -Iinclude -Isrc -std=c++17 main.cpp
+g++ -Iinclude -Isrc -std=c++17 -o main main.cpp && ./main
