@@ -114,6 +114,7 @@ public:
             std::cout << item; //print the item
      }
      */
+    
     BWDIterator bbegin()
     {
         return BWDIterator(this, true);
